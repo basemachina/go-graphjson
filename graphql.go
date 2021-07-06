@@ -343,21 +343,19 @@ func fixStructWithTypename(v reflect.Value) {
 		// If the field is a fragment and does not match the typename,
 		// initialize the struct
 		for i := 0; i < v.NumField(); i++ {
-			// case of "foo": [...]
-			if v.Field(i).Kind() == reflect.Slice {
-				fixStructWithTypename(v.Field(i))
-				continue
-			}
-
-			if typeName == "" {
-				return
-			}
-
 			// case of field is like "fragmentField fragmentField `graphql:"... on Fragment"`"
 			fieldType := v.Type().Field(i)
 			if isGraphQLFragment(fieldType) && notEqualToTypeCondition(fieldType, typeName) {
 				e := v.Field(i)
 				v.Field(i).Set(reflect.Zero(e.Type()))
+			} else {
+				// Fields that are not initialized are further explored.
+				switch v.Field(i).Kind() {
+				case reflect.Ptr,
+					reflect.Slice,  // case of "foo": [...]
+					reflect.Struct: // case of "foo": {...}
+					fixStructWithTypename(v.Field(i))
+				}
 			}
 		}
 	}
