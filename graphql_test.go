@@ -378,6 +378,70 @@ func TestUnmarshal_union_typename(t *testing.T) {
 	}
 }
 
+func TestUnmarshal_interface_union_typename(t *testing.T) {
+	/*
+		{
+			__typename
+			... on Event { -- Event is an interface of events
+				createdAt
+				... on ClosedEvent {
+					createdAt
+					actor {login}
+				}
+				... on ReopenedEvent {
+					createdAt
+					actor {login}
+				}
+			}
+		}
+	*/
+	type actor struct{ Login graphql.String }
+	type closedEvent struct {
+		Actor     actor
+		CreatedAt time.Time
+	}
+	type reopenedEvent struct {
+		Actor     actor
+		CreatedAt time.Time
+	}
+	type event struct {
+		ClosedEvent   closedEvent   `graphql:"... on ClosedEvent"`
+		ReopenedEvent reopenedEvent `graphql:"... on ReopenedEvent"`
+		Typename      *string       `graphql:"__typename"`
+	}
+	type issueTimelineItem struct {
+		Event    event   `graphql:"... on Event"`
+		Typename *string `graphql:"__typename"`
+	}
+	var got issueTimelineItem
+	err := graphjson.Unmarshal([]byte(`{
+		"createdAt": "2017-06-29T04:12:01Z",
+		"actor": {
+			"login": "shurcooL-test"
+		},
+		"__typename": "ClosedEvent"
+	}`), &got)
+	if err != nil {
+		t.Fatal(err)
+	}
+	want := issueTimelineItem{
+		Typename: stringP("ClosedEvent"),
+		Event: event{
+			Typename: stringP("ClosedEvent"),
+			ClosedEvent: closedEvent{
+				Actor: actor{
+					Login: "shurcooL-test",
+				},
+				CreatedAt: time.Unix(1498709521, 0).UTC(),
+			},
+			ReopenedEvent: reopenedEvent{},
+		},
+	}
+	if diff := cmp.Diff(want, got); diff != "" {
+		t.Errorf("(-want, +got)\n%s", diff)
+	}
+}
+
 func TestUnmarshal_union_typename_in_array(t *testing.T) {
 	type actor struct{ Login graphql.String }
 	type closedEvent struct {

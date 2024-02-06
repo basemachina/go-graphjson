@@ -340,12 +340,23 @@ func fixStructWithTypename(v reflect.Value) {
 			}
 		}
 
-		// If the field is a fragment and does not match the typename,
-		// initialize the struct
+		// if the struct contains field matches to __typename, it's not interface type.
+		isInterfaceType := typeName != ""
+		for i := 0; i < v.NumField(); i++ {
+			fieldType := v.Type().Field(i)
+			if !isGraphQLFragment(fieldType) {
+				continue
+			}
+			if !notEqualToTypeCondition(fieldType, typeName) {
+				isInterfaceType = false
+				break
+			}
+		}
+
 		for i := 0; i < v.NumField(); i++ {
 			// case of field is like "fragmentField fragmentField `graphql:"... on Fragment"`"
 			fieldType := v.Type().Field(i)
-			if typeName != "" && isGraphQLFragment(fieldType) && notEqualToTypeCondition(fieldType, typeName) {
+			if !isInterfaceType && typeName != "" && isGraphQLFragment(fieldType) && notEqualToTypeCondition(fieldType, typeName) {
 				e := v.Field(i)
 				v.Field(i).Set(reflect.Zero(e.Type()))
 			} else {
