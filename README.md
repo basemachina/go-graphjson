@@ -1,20 +1,20 @@
-graphjson
-=======
+# graphjson
 
-This is forked from https://godoc.org/github.com/shurcooL/graphql to export internal/jsonutil package.
+-   based on: [Code-Hex/go-graphjson](https://github.com/Code-Hex/go-graphjson)
+    -   Thanks Code-Hex!
+-   original: [shurcooL/graphql](https://github.com/shurcooL/graphql)
+    -   Thanks shurcooL and other contributors!
 
-[![Go Reference](https://pkg.go.dev/badge/github.com/Code-Hex/go-graphjson.svg)](https://pkg.go.dev/github.com/Code-Hex/go-graphjson)
+[![Go Reference](https://pkg.go.dev/badge/github.com/basemachina/go-graphjson.svg)](https://pkg.go.dev/github.com/basemachina/go-graphjson)
 
-Installation
-------------
+## Installation
 
 `graphjson` requires Go version 1.8 or later.
 
 ```bash
-go get -u github.com/Code-Hex/go-graphjson
+go get -u github.com/basemachina/go-graphjson
 ```
 
-License
--------
+## License
 
--	[MIT License](LICENSE)
+-   [MIT License](LICENSE)

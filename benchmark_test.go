@@ -8,7 +8,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/Code-Hex/go-graphjson"
+	"github.com/basemachina/go-graphjson"
 	"github.com/shurcooL/graphql"
 )
 

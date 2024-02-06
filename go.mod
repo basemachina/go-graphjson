@@ -1,4 +1,4 @@
-module github.com/Code-Hex/go-graphjson
+module github.com/basemachina/go-graphjson
 
 go 1.16
 
