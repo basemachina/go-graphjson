@@ -345,7 +345,7 @@ func fixStructWithTypename(v reflect.Value) {
 		for i := 0; i < v.NumField(); i++ {
 			// case of field is like "fragmentField fragmentField `graphql:"... on Fragment"`"
 			fieldType := v.Type().Field(i)
-			if isGraphQLFragment(fieldType) && notEqualToTypeCondition(fieldType, typeName) {
+			if typeName != "" && isGraphQLFragment(fieldType) && notEqualToTypeCondition(fieldType, typeName) {
 				e := v.Field(i)
 				v.Field(i).Set(reflect.Zero(e.Type()))
 			} else {
