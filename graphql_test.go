@@ -395,7 +395,10 @@ func TestUnmarshal_interface_union_typename(t *testing.T) {
 			}
 		}
 	*/
-	type actor struct{ Login graphql.String }
+	type actor struct {
+		Login    graphql.String
+		Typename *string `graphql:"__typename"` // __typename of actor is not given, but works without panicking.
+	}
 	type closedEvent struct {
 		Actor     actor
 		CreatedAt time.Time

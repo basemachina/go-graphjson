@@ -333,7 +333,7 @@ func fixStructWithTypename(v reflect.Value) {
 					break
 				}
 				iv2, ok2 := iface.(*string)
-				if ok2 {
+				if ok2 && iv2 != nil {
 					typeName = *iv2
 					break
 				}
